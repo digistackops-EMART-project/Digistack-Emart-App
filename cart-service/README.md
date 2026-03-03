@@ -55,7 +55,11 @@ cd Digistack-Emart-App
 Switch the Branch
 ```
 sudo git checkout V2-cart-Module
+```
+Create a bin directory Building package will crate in that Directory {like in Java targert folder}
+```
 cd cart-service
+sudo mkdir -p bin
 sudo chown -R $USER:$USER /app/Digistack-Emart-App
 ```
 # Step:4 ==> Download the Dependencies
@@ -90,7 +94,7 @@ sudo chmod 640 /app/Digistack-Emart-App/backend/.env
 sudo chown root:emart /app/Digistack-Emart-App/backend/.env
 ```
 
-#### Increase the SWAP, because go build will consume memory
+#### Increase the SWAP, because go build will consume memory {optional not required in Higher Machine PROD}
 ```
 sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
@@ -100,7 +104,14 @@ sudo swapon /swapfilev
 ### Run the Build Command
 ```
 go build -p=1 -ldflags="-w -s -X main.version=1.0.0" \
--o cart-service ./cmd/server/main.go
+-o bin/cart ./cmd/server/main.go
+
+go build -ldflags="-w -s" -o bin/cart ./cmd/server/main.go
+```
+#### Give permissions for "emart" user to RUN the Package
+```
+sudo cp /app/Digistack-Emart-App/cart-service/bin/cart  /opt/emart/cart/cart
+sudo chown emart:emart /opt/emart/cart/cart
 ```
 # Step:6 ==> Run the Package
 ## Run the systemd file for running cart service
@@ -115,11 +126,16 @@ After=network.target mongod.service redis.service
 [Service]
 User=emart
 Group=emart
-WorkingDirectory=/app/Digistack-Emart-App/cart-service
-ExecStart=/app/Digistack-Emart-App/cart-service
+WorkingDirectory=/opt/emart/cart/cart
 EnvironmentFile=/app/Digistack-Emart-App/cart-service/.env
+
+ExecStart=/opt/emart/cart/cart
+
 Restart=always
 RestartSec=5
+
+StandardOutput=append:/var/log/emart/cart-service.log
+StandardError=append:/var/log/emart/cart-service.log
 
 [Install]
 WantedBy=multi-user.target
