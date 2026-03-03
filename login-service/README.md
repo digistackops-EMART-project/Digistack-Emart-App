@@ -143,8 +143,8 @@ SERVER_PORT=8080
 ```
 #### Give proper permission to the .env file which has sensitive DATA
 ```
-sudo chmod 640 /app/Digistack-Emart-App/backend/.env
-sudo chown root:emart /app/Digistack-Emart-App/backend/.env
+sudo chmod 640 /app/Digistack-Emart-App/login-service/.env
+sudo chown root:emart /app/Digistack-Emart-App/login-service/.env
 ```
 ## Build the Code without execute the Test cases 
 ```
