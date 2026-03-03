@@ -101,13 +101,47 @@ sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfilev
 ```
-### Run the Build Command
+### Build the package without Test case execution
 ```
 go build -p=1 -ldflags="-w -s -X main.version=1.0.0" \
 -o bin/cart ./cmd/server/main.go
 
 go build -ldflags="-w -s" -o bin/cart ./cmd/server/main.go
 ```
+## Build the Package as per industry Standards
+
+### Unit Test cases
+```
+go test ./tests/unit/... \
+ -v \
+-count=1 \
+-coverprofile=coverage.unit.out \
+-covermode=atomic \
+-timeout=2m
+```
+Generate coverage report
+```
+ go tool cover -html=coverage.unit.out -o coverage.unit.html
+ go tool cover -func=coverage.unit.out | tail -1
+```
+### Integration Test
+```
+go test ./tests/integration/... \
+-v \
+-count=1 \
+-coverprofile=coverage.integration.out \
+-timeout=10m \
+-tags=integration
+```
+### Build the package
+```
+sudo rm -rf bin/*
+go build -p=1 -ldflags="-w -s -X main.version=1.0.0" \
+-o bin/cart ./cmd/server/main.go
+
+go build -ldflags="-w -s" -o bin/cart ./cmd/server/main.go
+```
+
 #### Give permissions for "emart" user to RUN the Package
 ```
 sudo cp /app/Digistack-Emart-App/cart-service/bin/cart  /opt/emart/cart/cart
@@ -146,6 +180,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable Emartcart
 sudo systemctl start Emartcart
 sudo systemctl status Emartcart
+```
+
+### API test 
+
+```
+go test ./tests/api/... -v -timeout=5m
 ```
 
 # Step:7 ==> Smoke Test {Check your Application Health }
