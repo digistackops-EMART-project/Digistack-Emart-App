@@ -150,8 +150,9 @@ sudo systemctl status Emartcart
 
 # Step:7 ==> Smoke Test {Check your Application Health }
 ```
-http://<cart-private=-IP>:8081/health/ready
-http://<cart-private=-IP>:8081/health/ready
+curl -sf http://<cart-private=-IP>:8081/health/
+curl -sf http://<cart-private=-IP>:8081/health/live
+curl -sf http://<cart-private=-IP>:8081/health/ready
 ```
 
 
