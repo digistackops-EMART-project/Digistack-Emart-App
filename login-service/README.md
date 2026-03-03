@@ -138,7 +138,7 @@ sudo vim /app/Digistack-Emart-App/login-service/.env
 SPRING_PROFILES_ACTIVE=prod
 MONGO_URI="mongodb://appuser:Pa55Word@<Logib-DB-Private-IP>:27017/userdb?authSource=userdb"
 JWT_SECRET="VeryStrongSecret"
-JWT_EXPIRATION_MS=3600000
+JWT_EXPIRATION_MS=86400000
 SERVER_PORT=8080
 ```
 #### Give proper permission to the .env file which has sensitive DATA
