@@ -85,7 +85,7 @@ sudo vim .env
 REACT_APP_API='/api/v1'
 ```
 ```
-npm install
+npm ci --prefer-offline --silent
 ```
 # Step:5 ==> Build the Package
 Run the Test cases
