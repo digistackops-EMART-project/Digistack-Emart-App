@@ -135,7 +135,7 @@ sudo vim /app/Digistack-Emart-App/login-service/.env
 ```
 #### Edit the values before export the values
 ```
-SPRING_PROFILE=prod
+SPRING_PROFILES_ACTIVE=prod
 MONGO_URI="mongodb://appuser:Pa55Word@<Logib-DB-Private-IP>:27017/userdb?authSource=userdb"
 JWT_SECRET="VeryStrongSecret"
 JWT_EXPIRATION_MS=3600000
@@ -191,7 +191,7 @@ mvn clean package -DskipTests -B
 ```
 #### Give permissions for "emart" user to RUN the Package
 ```
-sudo cp /app/Digistack-Emart-App/backend/tartget/login-service-1.0.0.jar  /opt/emart/login/login-service-1.0.0.jar
+sudo cp /app/Digistack-Emart-App/login-service/target/login-service-1.0.0.jar  /opt/emart/login/login-service-1.0.0.jar
 sudo chown emart:emart /opt/emart/login/login-service-1.0.0.jar
 ```
 # Step:6 ==> Run the Package
@@ -209,7 +209,7 @@ After=network.target
 User=emart
 Group=emart
 WorkingDirectory=/opt/emart/login
-EnvironmentFile=/app/Digistack-Emart-App/backend/.env
+EnvironmentFile=/app/Digistack-Emart-App/login-service/.env
 ExecStart=/usr/bin/java \
     -Xmx512m \
     -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} \
