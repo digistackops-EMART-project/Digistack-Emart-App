@@ -107,3 +107,7 @@ sudo rm -rf /var/www/frontend/*
 sudo mv build/* /var/www/frontend/
 sudo systemctl restart nginx
 ```
+# Step:7 ==> Smoke Test {Check your Application Health }
+```
+curl -sf http://<Frontend-private=-IP>:80
+```
