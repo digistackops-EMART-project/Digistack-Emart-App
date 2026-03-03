@@ -1,8 +1,3 @@
-# DB-Tier Setup
-Login to DB
-```
-mongosh --quiet -u dbadmin -p "${ADMIN_PASS}" --authenticationDatabase admin < initdb.js
-```
 # Backend-JAVA Application server
 ## Launch EC2 "t2.micro" Instance and In Sg, Open port "8080" for JAVA Application 
 # Step:1 ==> Install the Required packages
@@ -64,8 +59,8 @@ sudo chmod 750 /var/log/emart
 #### our code is in Git Repo 
 ```
 cd /app
-git clone https://github.com/digistackops-EMART-project/Digistack-Emart-App.git
-cd /Digistack-Emart-App
+sudo git clone https://github.com/digistackops-EMART-project/Digistack-Emart-App.git
+cd Digistack-Emart-App
 ```
 Switch branch
 
@@ -74,7 +69,7 @@ git checkout V1-Login-Module
 ```
 Backend Setup
 ```
-cd backend
+cd login-service
 sudo chown -R $USER:$USER $(pwd)
 ```
 ### Note
@@ -100,11 +95,35 @@ sudo chmod 640 /var/log/emart/*.log
 
 If your normal user is in the emart group, so he can access the logs 
 ```
+## connect the DB
+## Setup your Application Database by executing "initdb.js" script from Application-server
+
+Step:1 ==> install "mongo-Client" for communicate with Mongo Database
+```
+sudo vim /etc/yum.repos.d/mongodb-org-8.0.repo
+```
+```
+[mongodb-org-8.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://pgp.mongodb.com/server-8.0.asc
+```
+To install "Mongo-Shell" to communicate with Mongo database
+```
+sudo yum update -y
+sudo yum install -y mongodb-mongosh
+```
+### init the cart DB 
+```
+mongosh --quiet --host <Login_Db_Private_IP>-u dbadmin -p "${ADMIN_PASS}" --authenticationDatabase admin < initdb.js
+```
 # Step:4 ==> Download the Dependencies
 
 ## Setup environment variable
 ```
-cd Digistack-Emart-App/backend
+cd Digistack-Emart-App/login-service
 ```
 #### generate JWT_Secret
 ```
@@ -112,7 +131,7 @@ openssl rand -base64 64
 ```
 #### Mention our ENV values in ".env"
 ```
-sudo vim /app/Digistack-Emart-App/backend/.env
+sudo vim /app/Digistack-Emart-App/login-service/.env
 ```
 #### Edit the values before export the values
 ```
