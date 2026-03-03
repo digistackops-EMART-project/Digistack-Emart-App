@@ -1,8 +1,8 @@
-## Launch EC2 "t2.micro" Instance and In Sg, Open port "27017" for MongoDB
 # DB Tier
-# Install Mongo DB
+## Launch EC2 "t2.micro" Instance and In Sg, Open port "27017" for MongoDB
+# Step:1 ==> Install the Required packages
 
-### Create mondDB repo in YUM repository
+### Create MongoDB repo in YUM repository
 ```
 sudo vim /etc/yum.repos.d/mongodb-org-8.0.repo
 ```
