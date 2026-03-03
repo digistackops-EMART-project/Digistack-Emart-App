@@ -82,6 +82,13 @@ sudo systemctl status redis6
 redis6-cli -h <REDIS_SERVER_IP> -a <Redis-Password> ping
 ```
 # Step:4 ==> Download the Dependencies
+#### Increase the SWAP, because go build will consume memory {optional not required in Higher Machine PROD}
+```
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfilev
+```
 #### Download the Dependencies
 Once the Dependencies Downlaod "go.sum" file creatwe
 ```
@@ -113,13 +120,6 @@ sudo chmod 640 /app/Digistack-Emart-App/backend/.env
 sudo chown root:emart /app/Digistack-Emart-App/backend/.env
 ```
 
-#### Increase the SWAP, because go build will consume memory {optional not required in Higher Machine PROD}
-```
-sudo fallocate -l 2G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfilev
-```
 ### Build the package without Test case execution
 ```
 go build -p=1 -ldflags="-w -s -X main.version=1.0.0" \
