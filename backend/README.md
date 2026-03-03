@@ -216,7 +216,7 @@ journalctl -u loginbackend.service
 # Step:7 ==> Smoke Test {Check your Application Health }
 
 ```
-http://<Backend-Public-IP>:8080/health
-http://<Backend-Public-IP>:8080/health/live
-http://<Backend-Public-IP>:8080/health/ready
+curl -sf http://<login-private=-IP>:8080/health/
+curl -sf http://<clogin-private=-IP>:8080/health/live
+curl -sf http://<login-private=-IP>:8080/health/ready
 ```
