@@ -5,7 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import { authApi } from '../../services/authApi';
-import { useAuth } from '../../context/AuthContext';   // ✅ IMPORTANT
 import './Auth.css';
 
 const schema = yup.object({
@@ -22,7 +21,6 @@ const schema = yup.object({
 function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();   // ✅ Get login from context
 
   const {
     register,
@@ -32,20 +30,15 @@ function Login() {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
-
     try {
       const response = await authApi.login(data);
-
       const { token, name, email, roles } = response.data.data;
 
-      // ✅ Use AuthContext login (DO NOT use localStorage directly)
-      login(token, { name, email, roles });
+      localStorage.setItem('emart_token', token);
+      localStorage.setItem('emart_user', JSON.stringify({ name, email, roles }));
 
       toast.success(`Welcome back, ${name}!`);
-
-      // ✅ Redirect to dashboard
       navigate('/dashboard');
-
     } catch (error) {
       const status = error.response?.status;
       let message = 'Login failed. Please try again.';
@@ -67,14 +60,14 @@ function Login() {
   return (
     <div className="auth-page">
       <div className="auth-container">
-
+        {/* Logo */}
         <div className="auth-logo">
           <h1>Emart</h1>
           <p>Sign in to your account</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
-
+          {/* Email */}
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
@@ -83,14 +76,16 @@ function Login() {
               placeholder="Enter your email"
               className={errors.email ? 'input-error' : ''}
               {...register('email')}
+              data-testid="login-email-input"
             />
             {errors.email && (
-              <span className="error-msg">
+              <span className="error-msg" data-testid="login-email-error">
                 {errors.email.message}
               </span>
             )}
           </div>
 
+          {/* Password */}
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -99,9 +94,10 @@ function Login() {
               placeholder="Enter your password"
               className={errors.password ? 'input-error' : ''}
               {...register('password')}
+              data-testid="login-password-input"
             />
             {errors.password && (
-              <span className="error-msg">
+              <span className="error-msg" data-testid="login-password-error">
                 {errors.password.message}
               </span>
             )}
@@ -116,18 +112,19 @@ function Login() {
             </Link>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             className="btn-primary"
             disabled={isLoading}
+            data-testid="login-button"
           >
-            {isLoading ? 'Signing In...' : 'Sign In'}
+            {isLoading ? <span className="spinner">Signing In...</span> : 'Sign In'}
           </button>
 
           <p className="auth-link">
             New to Emart? <Link to="/signup">Create an account</Link>
           </p>
-
         </form>
       </div>
     </div>

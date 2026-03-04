@@ -5,10 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider }           from './context/CartContext';
-import Login    from './components/auth/Login';
-import Signup   from './components/auth/Signup';
-import AppHeader from './components/layout/AppHeader';
-import Dashboard from './components/common/Dashboard';
+import Login      from './components/auth/Login';
+import Signup     from './components/auth/Signup';
+import AppHeader  from './components/layout/AppHeader';
+import Dashboard  from './components/common/Dashboard';
+import BooksPage  from './components/books/BooksPage';
 
 // ============================================================
 // Layout: fixed header + scrollable main content area
@@ -98,7 +99,7 @@ function App() {
             }
           >
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/books"     element={<ComingSoon service="books" />} />
+            <Route path="/books"     element={<BooksPage />} />
             <Route path="/courses"   element={<ComingSoon service="courses" />} />
             <Route path="/software"  element={<ComingSoon service="software" />} />
             <Route path="/profile"   element={<div style={{padding:40}}><h2>My Profile (coming soon)</h2></div>} />

@@ -34,30 +34,36 @@ echo ""
 # ── Pre-flight checks ────────────────────────────────────────
 [[ -f /etc/emart/login.env ]] || die "/etc/emart/login.env not found. Run configure-env.sh first."
 [[ -f /etc/emart/cart.env  ]] || die "/etc/emart/cart.env not found.  Run configure-env.sh first."
+[[ -f /etc/emart/books.env ]] || die "/etc/emart/books.env not found. Run configure-env.sh first."
 
-systemctl is-active --quiet mongod        || die "MongoDB not running: sudo systemctl start mongod"
-systemctl is-active --quiet redis-server  || die "Redis not running:   sudo systemctl start redis-server"
+systemctl is-active --quiet mongod        || die "MongoDB not running:    sudo systemctl start mongod"
+systemctl is-active --quiet redis-server  || die "Redis not running:     sudo systemctl start redis-server"
+systemctl is-active --quiet postgresql    || die "PostgreSQL not running: sudo systemctl start postgresql"
 command -v nginx &>/dev/null              || die "Nginx not installed. Run install.sh first."
 
 ok "Pre-flight checks passed"
 
 # ── 1. Login Service ─────────────────────────────────────────
-info "Step 1/4: Deploying Login Service..."
+info "Step 1/5: Deploying Login Service..."
 bash "$REPO_DIR/scripts/deploy/deploy-login.sh" $SKIP_BUILD
 echo ""
 
 # ── 2. Cart Service ──────────────────────────────────────────
-info "Step 2/4: Deploying Cart Service..."
+info "Step 2/5: Deploying Cart Service..."
 bash "$REPO_DIR/scripts/deploy/deploy-cart.sh" $SKIP_BUILD
 echo ""
 
 # ── 3. Frontend ──────────────────────────────────────────────
-info "Step 3/4: Building and deploying Frontend..."
+info "Step 3/5: Deploying Books Service..."
+bash "$REPO_DIR/scripts/deploy/deploy-books.sh" $SKIP_BUILD
+echo ""
+
+info "Step 4/5: Building and deploying Frontend..."
 bash "$REPO_DIR/scripts/deploy/deploy-frontend.sh" $SKIP_BUILD
 echo ""
 
-# ── 4. Nginx ─────────────────────────────────────────────────
-info "Step 4/4: Installing Nginx config and reloading..."
+# ── 5. Nginx ─────────────────────────────────────────────────
+info "Step 5/5: Installing Nginx config and reloading..."
 cp -f "$REPO_DIR/nginx/emart.conf" /etc/nginx/sites-available/emart
 ln -sf /etc/nginx/sites-available/emart /etc/nginx/sites-enabled/emart
 rm -f /etc/nginx/sites-enabled/default
@@ -81,6 +87,7 @@ check_health() {
 
 check_health "Login Service " "http://localhost:8080/health/ready"
 check_health "Cart Service  " "http://localhost:8081/health/ready"
+check_health "Books Service " "http://localhost:8082/health/ready"
 check_health "Nginx         " "http://localhost/nginx-health"
 
 SERVER_IP=$(hostname -I | awk '{print $1}')
@@ -92,5 +99,6 @@ echo ""
 echo "  Frontend   →  http://${SERVER_IP}/"
 echo "  Login API  →  http://${SERVER_IP}/api/v1/auth/login"
 echo "  Cart API   →  http://${SERVER_IP}/cart-api/api/v1/cart"
+echo "  Books API  →  http://${SERVER_IP}/books-api/api/v1/books"
 echo "  Health     →  http://${SERVER_IP}/nginx-health"
 echo ""
