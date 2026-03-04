@@ -33,12 +33,12 @@ sudo mkdir -p /app
 ##### Clone the Repo
 ```
 cd /app
-sudo git clone https://github.com/digistackops-nodejs-org/NodeJS_3-Tier_Roboshop.git
-cd NodeJS_3-Tier_Roboshop
+sudo git clone https://github.com/digistackops-EMART-project/Digistack-Emart-App.git
+cd Digistack-Emart-App
 ```
 ##### Switch to Local-setup Branch
 ```
-sudo git checkout 01-Local-setup-Prod
+sudo git checkout V2-Books-Module
 ```
 ## Setup your Application Database by executing "master-data.js" script from Application-server
 
