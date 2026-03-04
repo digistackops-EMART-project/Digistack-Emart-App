@@ -87,7 +87,3 @@ sudo systemctl enable books
 sudo systemctl start books
 sudo systemctl status books
 ```
-
-
- # Roboshop-catalogue
-catalogue Module Code for Roboshop Project
