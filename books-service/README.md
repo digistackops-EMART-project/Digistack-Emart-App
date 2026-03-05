@@ -39,7 +39,7 @@ cd Digistack-Emart-App
 ```
 ##### Switch to Local-setup Branch
 ```
-sudo git checkout V2-Books-Module
+sudo git checkout V3-Book-Module
 ```
 
 
