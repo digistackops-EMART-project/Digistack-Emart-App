@@ -1,90 +1,87 @@
-# Books/course/software DB Tier
+# Login DB Tier
 ### Launch EC2 "t2.micro" Instance and In Sg, Open port "27017" for MongoDB
-## Install postgressql  DB
-```
-sudo dnf update -y
-sudo dnf install -y postgresql16-server
-which postgresql-setup
-```
-Initialize the database
-```
-sudo /usr/bin/postgresql-setup --initdb
-```
-<img width="579" height="52" alt="image" src="https://github.com/user-attachments/assets/a703cae2-1f67-4e7f-8700-6219399d0021" />
+# Install Mongo DB
 
+### Create mondDB repo in YUM repository
+```
+sudo vim /etc/yum.repos.d/mongodb-org-8.0.repo
+```
+### Add MongoDB repo Details 
+```
+[mongodb-org-8.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/8.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://pgp.mongodb.com/server-8.0.asc
+```
+### Install mongoDB
+```
+sudo yum update -y
+sudo yum install -y mongodb-org
+```
+### Start mongoDB
+```
+sudo systemctl daemon-reload
+sudo systemctl enable mongod
+sudo systemctl start mongod
+sudo systemctl status mongod
+```
+## Setup MongoDB
 
+#### Allow Remote Access
 ```
-sudo systemctl start postgresql
-sudo systemctl enable postgresql
+sudo vim /etc/mongod.conf
 ```
-
-## Setup postgressql DB
-
-#### Allow Remote Host connect to DB
-1. Edit the "postgresql.conf" file in path "/var/lib/pgsql/data/postgresql.conf"
+Replace 0.0.0.0 in bindIp
 ```
-sudo vim /var/lib/pgsql/data/postgresql.conf
+# network interfaces 
+    net:   
+       port: 27017   
+       bindIp: 0.0.0.0 # to bind to all interfaces
 ```
-ADD these Under connection settings
+##### Restart mongoDB
 ```
-listen_addresses = '*'
+sudo systemctl restart mongod
 ```
-
-2. Edit the "pg_hba.conf" file in path "/var/lib/pgsql/data/pg_hba.conf"
-
+### Setup Password for the Admin user in Database
+Login to DB
 ```
-sudo vim /var/lib/pgsql/data/pg_hba.conf
+mongosh
 ```
-Edit IPV4 Local Connection Method from ident to md5 these lines 
+Connect to the admin database to create a user
 ```
-# IPv4 local connections:
-host    all             all             127.0.0.1/32            md5
+use admin
 ```
-Also add these lines for the Password for the User "appuser" so we need to mention these line, take these password for the user "appuser" for DB "user-account" form any IP
+Create a user "appuser" with read/write access to the 'user-account' database
 ```
-# Allow remote user connections from a single IP
-host    all             all             0.0.0.0/0          md5
+db.createUser({
+  user: "dbadmin",
+  pwd:  "Pa55Word",
+  roles: [
+    { role: "userAdminAnyDatabase", db: "admin" },
+    { role: "readWriteAnyDatabase", db: "admin" },
+    { role: "dbAdminAnyDatabase",   db: "admin" }
+  ]
+});
 ```
-
-Also add these lines We encrypt the Password for the User "appuser" so we need to mention these line, take these encrypetd password for the user "appuser" for DB "user-account" form any IP
+Exit from DB
 ```
-host    all             all             0.0.0.0/0          scram-sha-256 
+exit
 ```
-
-Restart postgressql DB
+####  Ensure Remote authorization is enabled for admin user in mongod.conf
 ```
-sudo systemctl restart postgresql
+sudo vim /etc/mongod.conf
 ```
-#### Create DB and User in database
-
-Switch to postgres User
+Enable the authentication under security
 ```
-sudo -i -u postgres
+ authorization: enabled
 ```
-Login to DB promt
+### Restart mongoDB
 ```
-psql
+sudo systemctl start mongod
 ```
-Change the Passordward for postgres User
-
+### Use mongo-compass in your Local Machine and try to access your MongoDB
 ```
-ALTER USER postgres WITH PASSWORD 'NewStrongPasswordHere';
-```
-
-```
-SELECT VERSION();
-```
-
-### Create one Databse Admin User for our DB
-Create DnB admin user (role) with login password
-```
-CREATE ROLE dbadmin WITH LOGIN PASSWORD 'Admin@123';
-```
-Grant all privileges on all databases
-```
-GRANT ALL PRIVILEGES ON DATABASE postgres TO dbadmin;
-```
-Grant ability to create new databases and roles (similar to WITH GRANT OPTION)
-```
-ALTER ROLE dbadmin CREATEDB CREATEROLE SUPERUSER;
+mongodb://<your-AWS-Public-IP>:27017
 ```
