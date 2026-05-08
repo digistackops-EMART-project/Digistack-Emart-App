@@ -1,4 +1,4 @@
-# Emart — Microservices E-Commerce Platform
+## Emart — Microservices E-Commerce Platform
 
 Complete source code for all 7 backend services, React frontend, Nginx config, and deploy scripts.
 
